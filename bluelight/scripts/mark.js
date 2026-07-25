@@ -361,20 +361,28 @@ function drawCIRCLE(canvas, Mark, viewport) {
     }
 }
 
-function drawTRANSFORM(canvas, Mark, viewport) {
+function drawPS(canvas, Mark, viewport) {
     if (Mark.ImageHorizontalFlip == "Y" || Mark.ImageHorizontalFlip == "N") {
         viewport.VerticalFlip = Mark.ImageHorizontalFlip == "Y" ? true : false;
-        refleshViewport();
     }
     if (Mark.ImageRotation > 0) {
         viewport.rotate = parseInt(Mark.ImageRotation);
         setTransform();
-        SetAllViewport("rotate", GetViewport().rotate);
+        SetAllViewport("rotate", viewport.rotate);
+    }
+    if (Mark.LUTData) {
+        GetViewport().content.image.LUTData = Mark.LUTData;
+    }
+    if (!isNaN(Mark.windowCenter) || !isNaN(Mark.windowWidth)) {
+        if (!isNaN(Mark.windowCenter)) viewport.windowCenter = Mark.windowCenter;
+        if (!isNaN(Mark.windowWidth)) viewport.windowWidth = Mark.windowWidth;
+        setWindowLevel();
     }
     if (Mark.PresentationPixelMagnificationRatio) {
         viewport.scale = parseFloat(Mark.PresentationPixelMagnificationRatio);
         setTransform();
     }
+    refleshViewport();
 }
 
 function drawTwoDimensionPolyline(canvas, mark, viewport) {
@@ -692,7 +700,7 @@ function displayMark(viewportNum = viewportNumber, firstLoad = false) {
         else if (Mark.type == "INTERPOLATED") drawINTERPOLATED(MarkCanvas, Mark, viewport);
         else if (Mark.type == "ELLIPSE") drawELLIPSE(MarkCanvas, Mark, viewport);
         else if (Mark.type == "CIRCLE") drawCIRCLE(MarkCanvas, Mark, viewport);
-        else if (Mark.type == "TRANSFORM" && firstLoad) drawTRANSFORM(MarkCanvas, Mark, viewport);
+        else if (Mark.type == "PS" && firstLoad) drawPS(MarkCanvas, Mark, viewport);
     }
 
     for (var Mark of patientMark_enable) {

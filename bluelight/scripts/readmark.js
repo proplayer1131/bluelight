@@ -315,17 +315,32 @@ function readDicomMark(dataSet) {
             // Image Rotation -> 0, 90, 180, 270
             // Presentation Pixel Magnification Ratio -> float
             var PresentationPixelMagnificationRatio = dataSet.elements?.x0070005a?.items[0]?.dataSet?.float('x00700103');
-            if (dataSet.string("x00700041") == "Y" || dataSet.int16("x00700042") >= 90 || PresentationPixelMagnificationRatio) {
+            var LUTData = dataSet.elements?.x20500010?.items[0]?.dataSet?.elements.x00283006;
+            var windowCenter = dataSet.elements?.x00283110?.items[0]?.dataSet?.intString('x00281050');
+            var windowWidth = dataSet.elements?.x00283110?.items[0]?.dataSet?.intString('x00281051');
+            if (dataSet.string("x00700041") == "Y" || dataSet.int16("x00700042") >= 90 || PresentationPixelMagnificationRatio || LUTData || !isNaN(WindowCenter) || !isNaN(WindowWidth)) {
               var x00081115DataSet = dataSet.elements.x00081115.items[ii2].dataSet.elements.x00081140.items;
               for (var s = 0; s < x00081115DataSet.length; s++) {
                 sop1 = x00081115DataSet[s].dataSet.string(Tag.ReferencedSOPInstanceUID);
                 var GspsMark = new BlueLightMark();
                 GspsMark.sop = sop1;
                 GspsMark.pointArray = [];
-                GspsMark.showName = GspsMark.hideName = GspsMark.type = "TRANSFORM";
+                GspsMark.windowCenter = windowCenter;
+                GspsMark.windowWidth = windowWidth;
+                GspsMark.showName = GspsMark.hideName = GspsMark.type = "PS";
                 GspsMark.ImageHorizontalFlip = dataSet.string("x00700041") == "Y";
                 GspsMark.ImageRotation = dataSet.int16("x00700042");
                 GspsMark.PresentationPixelMagnificationRatio = PresentationPixelMagnificationRatio;
+
+                if (LUTData) {
+                  var length = dataSet.elements?.x20500010?.items[0]?.dataSet?.elements.x00283006.length / 2, array = new Array(length);;
+                  if (length == 256) {
+                    for (var lut_ = 0; lut_ < 256; lut_++)
+                      array[lut_] = dataSet.elements?.x20500010?.items[0]?.dataSet.uint16('x00283006', lut_);
+                    GspsMark.LUTData = array;
+                  }
+                }
+
                 PatientMark.push(GspsMark);
                 refreshMark(GspsMark, false);
                 if (sop1) refreshMarkFromSop(sop1);
