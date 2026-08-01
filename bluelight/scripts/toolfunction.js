@@ -110,8 +110,18 @@ function createElem(tagName = 'div', Id = null, className = null, innerText = nu
     return elem;
 }
 
+function createCanvas(w, h) {
+    const canvas = document.createElement('canvas');
+    canvas.width = w, canvas.height = h;
+    return canvas;
+}
+
 function log(value) {
     console.log(value);
+}
+
+function appendChilds(parent, chinds) {
+    for (var child of chinds) parent.appendChild(child);
 }
 
 function CheckNull(str) {

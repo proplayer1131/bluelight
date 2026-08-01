@@ -1,9 +1,7 @@
 
 function initMagnifier() {
-    var magnifierDiv = document.createElement("DIV");
-    var magnifierCanvas = document.createElement("Canvas");
-    magnifierDiv.id = "magnifierDiv";
-    magnifierCanvas.id = "magnifierCanvas";
+    var magnifierDiv = createElem("DIV", "magnifierDiv");
+    var magnifierCanvas = createElem("Canvas", "magnifierCanvas");
     magnifierDiv.appendChild(magnifierCanvas);
     document.body.appendChild(magnifierDiv);
 

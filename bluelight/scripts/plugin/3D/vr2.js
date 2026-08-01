@@ -16,9 +16,7 @@ function load3DPlugin() {
         hideAllDrawer("3DImgeDIv");
         invertDisplayById('3DImgeDIv');
         if (getByid("3DImgeDIv").style.display == "none") getByid("3DImgParent").style.position = "";
-        else {
-            getByid("3DImgParent").style.position = "relative";
-        }
+        else getByid("3DImgParent").style.position = "relative";
     }
 }
 

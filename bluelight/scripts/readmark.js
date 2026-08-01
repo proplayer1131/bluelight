@@ -34,10 +34,8 @@ function readDicomOverlay(dataSet) {
         OverlayMark.showName = dataSet.string('x60' + ov_str + '1500');
 
       OverlayMark.pixelData = tempPixeldata.slice(0);
-      OverlayMark.canvas = document.createElement("CANVAS");
+      OverlayMark.canvas = createCanvas(OverlayMark.width, OverlayMark.height);
       OverlayMark.ctx = OverlayMark.canvas.getContext('2d');
-      OverlayMark.canvas.width = OverlayMark.width;
-      OverlayMark.canvas.height = OverlayMark.height;
       var pixelData = OverlayMark.ctx.getImageData(0, 0, OverlayMark.width, OverlayMark.height);
       var pixel32Data = new Uint32Array(pixelData.data.buffer);
       for (var i = 0; i < pixel32Data.length; i++) {
@@ -424,9 +422,7 @@ function loadDicomSeg(image) {
           for (var pix = 0; pix < rect; pix++)
             SegMark.pixelData[pix] = NewpixelData[pix];
 
-          SegMark.canvas = document.createElement("CANVAS");
-          SegMark.canvas.width = image.columns;
-          SegMark.canvas.height = image.rows;
+          SegMark.canvas = createCanvas(image.columns, image.rows);
           SegMark.ctx = SegMark.canvas.getContext('2d');
           var pixelData = SegMark.ctx.getImageData(0, 0, image.columns, image.rows);
           var pixel32Data = new Uint32Array(pixelData.data.buffer);
@@ -476,9 +472,7 @@ function loadDicomSeg(image) {
               SegMark.pixelData[pix] = NewpixelData[parseInt(pix / (rect / (NewpixelData.length / sliceNum))) + (NewpixelData.length / sliceNum) * k];
           }
 
-          SegMark.canvas = document.createElement("CANVAS");
-          SegMark.canvas.width = image.columns;
-          SegMark.canvas.height = image.rows;
+          SegMark.canvas = createCanvas(image.columns, image.rows);
           SegMark.ctx = SegMark.canvas.getContext('2d');
           var pixelData = SegMark.ctx.getImageData(0, 0, image.columns, image.rows);
           var pixel32Data = new Uint32Array(pixelData.data.buffer);

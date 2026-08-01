@@ -403,9 +403,8 @@ function html_onload() {
           this.selectObj = null;
         }
       }
-      var b_col2x1 = document.createElement("img");
-      var b_row1x2 = document.createElement("img");
-      b_col2x1.className = b_row1x2.className = "img";
+      var b_col2x1 = createElem("img", null, "img");
+      var b_row1x2 = createElem("img", null, "img");
       b_col2x1.src = "../image/icon/lite/b_col2x1.png";
       b_row1x2.src = "../image/icon/lite/b_row1x2.png";
       b_col2x1.style["max-width"] = b_row1x2.style["max-width"] = "unset";
@@ -499,8 +498,7 @@ function html_onload() {
   }*/
 
   getByid("removeAllRuler").onclick = function () {
-    var removeRulerWindow = document.createElement("DIV");
-    removeRulerWindow.className = "removeRulerWindow";
+    var removeRulerWindow = createElement("DIV", null, "removeRulerWindow");
 
     var label = document.createElement("LABEL");
     label.innerText = "Remove all measurements?";
@@ -516,9 +514,7 @@ function html_onload() {
     btn_cancel.innerText = "Cancel";
     btn_cancel.window = removeRulerWindow;
     btn_remove.window = removeRulerWindow;
-    removeRulerWindow.appendChild(label);
-    removeRulerWindow.appendChild(btn_remove);
-    removeRulerWindow.appendChild(btn_cancel);
+    appendChilds(removeRulerWindow, [label, btn_remove, btn_cancel]);
     getByid("container").appendChild(removeRulerWindow);
 
     btn_cancel.onclick = function () { getByid("container").removeChild(this.window); };
@@ -706,8 +702,8 @@ function drawBorder(element) {
   var list = BorderList_Icon;
   for (var elemID of list) getByid(elemID).style['border'] = "";
 
-  element.style["border"] = 3 + "px #FFFFFF solid"
-  element.style["borderRadius"] = "3px 3px 3px 3px"
+  element.style["border"] = 3 + "px #FFFFFF solid";
+  element.style["borderRadius"] = "3px 3px 3px 3px";
 }
 
 function img2darkByClass(classname, dark) {
@@ -715,13 +711,8 @@ function img2darkByClass(classname, dark) {
     let icon = getClass(className);
     for (let i = 0; i < icon.length; i++) {
       if (!icon[i].classList.contains(classname)) {
-        if (dark) {
-          icon[i].style.opacity = 1;
-          icon[i].enable = true;
-        } else {
-          icon[i].style.opacity = 0.25;
-          icon[i].enable = false;
-        }
+        icon[i].style.opacity = dark ? 1 : 0.25;
+        icon[i].enable = dark ? true : false;
       } else {
         icon[i].style.opacity = 1;
         icon[i].enable = true;

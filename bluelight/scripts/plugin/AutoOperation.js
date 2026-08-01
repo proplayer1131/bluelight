@@ -34,25 +34,21 @@ function initAutoOperation() {
     }
     VIEWPORT.loadViewportList.push('AutoOperation');
 
-    var span = document.createElement("SPAN");
+    var span = createElem("SPAN"), othereDIv = getByid("othereDIv");
     span.innerHTML = `<img class="innerimg" alt="autoLR" id="autoLR" onmouseover = "onElementOver(this);" onmouseleave = "onElementLeave();" src="../image/icon/lite/autoLR.png" width="50" height="50">;`;
-    getByid("othereDIv").appendChild(document.createElement("BR"));
-    getByid("othereDIv").appendChild(span);
+    appendChilds(othereDIv, [createElem("BR"), span]);
 
-    var span = document.createElement("SPAN");
+    var span = createElem("SPAN");
     span.innerHTML = `<img class="innerimg" alt="autoL2R2" id="autoL2R2" onmouseover = "onElementOver(this);" onmouseleave = "onElementLeave();" src="../image/icon/lite/autoL2R2.png" width="50" height="50">;`;
-    getByid("othereDIv").appendChild(document.createElement("BR"));
-    getByid("othereDIv").appendChild(span);
+   appendChilds(othereDIv, [createElem("BR"), span]);
 
-    var span = document.createElement("SPAN");
+    var span = createElem("SPAN");
     span.innerHTML = `<img class="innerimg" alt="autoLL" id="autoLL" onmouseover = "onElementOver(this);" onmouseleave = "onElementLeave();" src="../image/icon/lite/autoLL.png" width="50" height="50">;`;
-    getByid("othereDIv").appendChild(document.createElement("BR"));
-    getByid("othereDIv").appendChild(span);
+    appendChilds(othereDIv, [createElem("BR"), span]);
 
-    var span = document.createElement("SPAN");
+    var span = createElem("SPAN");
     span.innerHTML = `<img class="innerimg" alt="autoRR" id="autoRR" onmouseover = "onElementOver(this);" onmouseleave = "onElementLeave();" src="../image/icon/lite/autoRR.png" width="50" height="50">;`;
-    getByid("othereDIv").appendChild(document.createElement("BR"));
-    getByid("othereDIv").appendChild(span);
+    appendChilds(othereDIv, [createElem("BR"), span]);
 
 }
 initAutoOperation();

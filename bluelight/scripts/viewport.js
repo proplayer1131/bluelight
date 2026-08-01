@@ -125,8 +125,7 @@ class BlueLightViewPort {
     set framesNumber(v) { this.content.framesNumber = v };
     initViewportCanvas(div, index) {
         //一般的Canvas
-        var dicmCanvas = document.createElement("CANVAS");
-        dicmCanvas.className = "DicomCanvas";
+        var dicmCanvas = createElem("CANVAS", null, "DicomCanvas");
         div.appendChild(dicmCanvas);
         this.canvas = dicmCanvas;
         //只要取得canvas()就能快速取得該Viewport的影像
@@ -140,9 +139,7 @@ class BlueLightViewPort {
         }
 
         //標記Canvas
-        var MarkCanvas = document.createElement("CANVAS");
-        MarkCanvas.id = "MarkCanvas" + index;
-        MarkCanvas.className = "MarkCanvas";
+        var MarkCanvas = createElem("CANVAS", "MarkCanvas" + index, "MarkCanvas");
         div.appendChild(MarkCanvas);
         this.MarkCanvas = MarkCanvas;
     }
@@ -150,8 +147,7 @@ class BlueLightViewPort {
     get ctx() { return this.canvas.getContext("2d"); }
 
     initLeftRule(div, index) {
-        var leftRule = document.createElement("CANVAS");
-        leftRule.className = "leftRule";
+        var leftRule = createElem("CANVAS", null, "leftRule");
         leftRule.height = 500;
         leftRule.width = 50;
         this.leftRule = div.leftRule = leftRule;
@@ -159,8 +155,7 @@ class BlueLightViewPort {
     }
 
     initDownRule(div, index) {
-        var downRule = document.createElement("CANVAS");
-        downRule.className = "downRule";
+        var downRule = createElem("CANVAS", null, "downRule");
         downRule.height = 20;
         this.downRule = div.downRule = downRule;
         div.appendChild(downRule);
@@ -169,8 +164,7 @@ class BlueLightViewPort {
     initLabel(div, index) {
         var labels = ['labelLT', 'labelRT', 'labelLB', 'labelRB', 'labelMT', 'labelMB', 'labelLM', 'labelRM'];
         for (var label of labels) {
-            var elem = document.createElement("LABEL");
-            elem.className = `${label} innerLabel`;
+            var elem = createElem("LABEL", null, `${label} innerLabel`);
             this[label] = div[label] = elem;
             div.appendChild(elem);
         }
@@ -515,6 +509,11 @@ function renderPixelData2Cnavas(image, pixelData, canvas, info = {}) {
     const data = imgData.data;
     const dataLength = data.length;
     const data32Length = Uint32Data.length;
+    /*if (image.LUTData && image.LUTData.length == 256) {
+        var pixelData2 = new Array(pixelData.length);
+        for (var i = 0; i < pixelData.length; i++)pixelData2[i] = isNaN(image.LUTData[pixelData[i]]) ? pixelData[i] : image.LUTData[pixelData[i]];
+        pixelData = pixelData2;
+    }*/
     if (image.RedLutArray && image.GreenLutArray && image.BlueLutArray &&
         image.RedLutArray.length == 256 && image.GreenLutArray.length == 256 && image.BlueLutArray.length == 256) {
         for (var i = 0, j = 0; i < dataLength; i += 4, j += 1) {
@@ -623,8 +622,7 @@ if (viewport.type == 'img') {
 */
 
 function cloneCanvas(canvas) {
-    var newCanvas = document.createElement('canvas');
-    newCanvas.width = canvas.width, newCanvas.height = canvas.height;
+    var newCanvas = createCanvas(canvas.width, canvas.height);
     newCanvas.getContext('2d').drawImage(canvas, 0, 0);
     return newCanvas;
 }

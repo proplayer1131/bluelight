@@ -590,13 +590,7 @@ function AddAdvanceFunction() {
       var link = document.createElement('a');
       link.download = 'dicom.png';
 
-      function BuildCanvas(oldCanvas) {
-        var newCanvas = document.createElement('canvas');
-        newCanvas.width = oldCanvas.width;
-        newCanvas.height = oldCanvas.height;
-        return newCanvas;
-      }
-      var newCanvas = BuildCanvas(GetViewport().canvas);
+      var newCanvas = createCanvas(GetViewport().canvas.width,  GetViewport().canvas.height);
       var context = newCanvas.getContext('2d');
       context.translate(newCanvas.width / 2, newCanvas.height / 2);
       context.rotate((GetViewport().rotate * Math.PI) / 180);

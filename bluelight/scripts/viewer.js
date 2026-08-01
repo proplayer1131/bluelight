@@ -311,9 +311,7 @@ function SrLoader(Sop) {
         getByid("SrPage").innerHTML = ""; // 清空，避免顯示到錯誤影像。
         img2darkByClass("sr", false);
         leftLayout.setAccent(Sop.parent.SeriesInstanceUID);
-        var iFrame = document.createElement("iframe");
-        iFrame.className = "SRView";
-        iFrame.id = "SRView";
+        var iFrame = createElem("iframe", "SRView", "SRView");
         const dateString = Sop.dataSet.string(Tag.ContentDate) + Sop.dataSet.string(Tag.ContentTime);
 
         // 1. 將字串轉換為 JavaScript Date 物件
@@ -597,8 +595,7 @@ function loadPicture(url) {
             var Sop = ImageManager.pushStudy(imageObj);
             Sop.type = 'img';
 
-            var canvas = document.createElement("CANVAS");
-            canvas.width = img.width, canvas.height = img.height;
+            var canvas = createCanvas(img.width, img.height);
             var ctx = canvas.getContext("2d");
             ctx.drawImage(img, 0, 0);
             imageObj.pixelData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
@@ -730,12 +727,8 @@ function EcgLoader(Sop) {
         //////////////////////////////////////////////////
 
 
-        if (!getByid("EcgCanvas")) {
-            var EcgCanvas = document.createElement("CANVAS");
-            EcgCanvas.id = "EcgCanvas";
-
-            getByid("EcgView").appendChild(EcgCanvas);
-        }
+        if (!getByid("EcgCanvas"))
+            getByid("EcgView").appendChild(createElem("CANVAS","EcgCanvas"));
 
         var ECGSpeedSelect = getByid("ECGSpeedSelect"), ECGVoltageSelect = getByid("ECGVoltageSelect");
         for (var opt of ECGSpeedSelect.options)

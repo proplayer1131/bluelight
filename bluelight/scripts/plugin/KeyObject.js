@@ -6,8 +6,7 @@ KeyObjecNames.selected = 'Example KOS';
 
 function loadMarkupPlugin() {
     if (getByid("MarkupImgParent")) return;
-    var span = document.createElement("SPAN");
-    span.id = "MarkupImgParent";
+    var span = createElem("SPAN", "MarkupImgParent");
     span.innerHTML = `
      <img class="img" loading="lazy" altzhtw="3D" alt="3D" id="MarkupDrawerImg" src="../image/icon/lite/markup.png"
           width="50" height="50">
@@ -19,10 +18,7 @@ function loadMarkupPlugin() {
         hideAllDrawer("MarkupDIv");
         invertDisplayById('MarkupDIv');
         if (getByid("MarkupDIv").style.display == "none") getByid("MarkupImgParent").style.position = "";
-        else {
-            getByid("MarkupImgParent").style.position = "relative";
-            //onElementLeave();
-        }
+        else getByid("MarkupImgParent").style.position = "relative";
     }
 }
 
@@ -120,10 +116,7 @@ function loadKeyObjecyPlugin() {
         var delSlider = document.createElement('input');
         delSlider.type = "range"; delSlider.style['accent-color'] = "red"; delSlider.style.width = "100px";
         delSlider.min = "0"; delSlider.max = "100"; delSlider.value = "0";
-        outerDiv.appendChild(label);
-        outerDiv.appendChild(createElem("BR"));
-        outerDiv.appendChild(delImg);
-        outerDiv.appendChild(delSlider);
+        appendChilds(outerDiv, [label, createElem("BR"), delImg, delSlider]);
         delSlider.onchange = function () {
             if (this.value == 100) {
                 var target = document.querySelector('input[name="KO_AddAndDel"]:checked')?.value, selected = KeyObjecNames.selected;

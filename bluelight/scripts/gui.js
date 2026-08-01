@@ -203,12 +203,10 @@ class LeftLayout {
         var ImgDiv = series_div.ImgDiv;
 
         if (!ImgDiv.canvas()) {
-            var leftCanvas = document.createElement("CANVAS");
-            leftCanvas.className = "LeftCanvas";
+            var leftCanvas = createElem("CANVAS", null, "LeftCanvas");
             ImgDiv.appendChild(leftCanvas);
             displayLeftCanvas(leftCanvas, image, pixelData);
-            var label = document.createElement("label");
-            label.className = "LeftImgCountLabel";
+            var label = createElem("label", null, "LeftImgCountLabel");
             series_div.series_label = label;
             ImgDiv.appendChild(label);
         }
@@ -267,18 +265,16 @@ class LeftLayout {
         }
 
         for (var o = 0; o < showNameList.length; o++) {
-            var label = document.createElement('LABEL');
-            label.innerText = "" + showNameList[o];
+            var label = createElem("LABEL", null, "LeftShadowLabel", "" + showNameList[o]);
             label.name = "" + hideNameList[o];
-            label.className = "LeftShadowLabel";
             label.style.color = colorList[o];
-            var checkbox = document.createElement('input');
+            var checkbox = createElem('input');
             checkbox.type = "checkbox";
 
             checkbox.checked = true;
             checkbox.name = "" + hideNameList[o];
 
-            label.oncontextmenu = function (e) { e.preventDefault(); };
+            label.oncontextmenu = e => e.preventDefault();
             //設定滑鼠按鍵事件
             label.onmousedown = function (e) {
                 if (e.button == 2) jump2Mark(this.name);
@@ -288,14 +284,10 @@ class LeftLayout {
             };
             label.appendChild(checkbox);
 
-            if (getByid("menu" + series)) {
-                getByid("menu" + series).appendChild(label);
-                getByid("menu" + series).appendChild(document.createElement("br"));
-            } else {
-                var smallDiv = document.createElement("DIV");
-                smallDiv.id = "menu" + series;
-                smallDiv.appendChild(label);
-                smallDiv.appendChild(document.createElement("br"));
+            if (getByid("menu" + series)) appendChilds(getByid("menu" + series), [label, createElem("br")]);
+            else {
+                var smallDiv = createElem("DIV", "menu" + series);
+                appendChilds(smallDiv, [label, createElem("br")]);
                 series_div.appendChild(smallDiv);
             }
         }

@@ -52,9 +52,7 @@ function createHaningProtocolsDIV(viewportNum = viewportNumber) {
         var textbox = document.createElement("input");
         textbox.type = textbox.className = "text";
         textbox.value = content ? content : "";
-        row.appendChild(checkbox);
-        row.appendChild(label);
-        row.appendChild(textbox);
+        appendChilds(row, [checkbox, label, textbox]);
         container.appendChild(row);
     }
 
