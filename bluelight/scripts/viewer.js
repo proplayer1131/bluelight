@@ -1032,6 +1032,18 @@ function getBlackPercent() {
     return { percent: blackPercent, error: blackPercent >= 99 };
 }
 
+function getPurplePercent() {
+    var canvas = GetViewport().canvas, ctx = canvas.getContext('2d');
+
+    var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    var purplePixelCount = 0;
+    for (let i = 0; i < imgData.length - 4; i += 4) {
+        if (imgData[i] - imgData[i + 1] >= 100 && imgData[i + 2] - imgData[i + 1] >= 100) purplePixelCount++;
+    }
+    var purplePercent = (purplePixelCount / (canvas.width * canvas.height)) * 100;
+    return { percent: purplePercent, error: purplePercent >= 30 };
+}
+
 function getWhitePercent() {
     var canvas = GetViewport().canvas, ctx = canvas.getContext('2d');
 
@@ -1044,6 +1056,7 @@ function getWhitePercent() {
     return { percent: whitePercent, error: whitePercent >= 25 };
 }
 
+/*
 function getWhitePercent() {
     var canvas = GetViewport().canvas, ctx = canvas.getContext('2d');
 
@@ -1061,7 +1074,7 @@ function getWhitePercent() {
     }
     var clippingPercent = (clippingPixels / (canvas.width * canvas.height)) * 100;
     return { percent: clippingPercent, error: clippingPercent >= 0.5 };
-}
+}*/
 
 function detectPhotometricAnomaly() {
     var image = GetViewport().content.image, dataSet = image.data;
