@@ -219,8 +219,8 @@ loadKeyObjecyPlugin();
 
 function generateKOS(studyInfo, referencedImages, description) {
 
-    const kosInstanceUid = dcmjs.data.DicomMetaDictionary.uid();
-    const seriesInstanceUid = dcmjs.data.DicomMetaDictionary.uid();
+    const kosInstanceUid = dcmjs_for_ko.data.DicomMetaDictionary.uid();
+    const seriesInstanceUid = dcmjs_for_ko.data.DicomMetaDictionary.uid();
     const now = new Date();
     const dateStr = now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
     const timeStr = String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0') + String(now.getSeconds()).padStart(2, '0');
@@ -298,16 +298,16 @@ function generateKOS(studyInfo, referencedImages, description) {
         MediaStorageSOPClassUID: dataset.SOPClassUID,
         MediaStorageSOPInstanceUID: dataset.SOPInstanceUID,
         TransferSyntaxUID: '1.2.840.10008.1.2.1', // Explicit VR Little Endian
-        ImplementationClassUID: dcmjs.data.DicomMetaDictionary.uid(),
+        ImplementationClassUID: dcmjs_for_ko.data.DicomMetaDictionary.uid(),
         ImplementationVersionName: 'DCMJS_BROWSER'
     };
 
     // 將 JSON 轉為 dcmjs 內部格式
-    const denaturalizedMeta = dcmjs.data.DicomMetaDictionary.denaturalizeDataset(meta);
-    const denaturalizedDataset = dcmjs.data.DicomMetaDictionary.denaturalizeDataset(dataset);
+    const denaturalizedMeta = dcmjs_for_ko.data.DicomMetaDictionary.denaturalizeDataset(meta);
+    const denaturalizedDataset = dcmjs_for_ko.data.DicomMetaDictionary.denaturalizeDataset(dataset);
 
     // 合併 Header 和 Body
-    const dicomDict = new dcmjs.data.DicomDict(denaturalizedMeta);
+    const dicomDict = new dcmjs_for_ko.data.DicomDict(denaturalizedMeta);
     dicomDict.dict = denaturalizedDataset;
 
     // 寫入二進位 Buffer

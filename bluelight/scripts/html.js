@@ -280,12 +280,14 @@ function html_onload() {
   getByid("OnlyShowKOImg").onclick = function () {
     GetViewport().KO = !GetViewport().KO;
     invertDisplayById('KoDrawerDIv');
-    if (GetViewport().KO_SeriesDescription == null) {
+    if (GetViewport().KO_SeriesDescription == null && getMarkFromKoStudy(GetViewport().study).length) {
       GetViewport().KO_SeriesDescription = getMarkFromKoStudy(GetViewport().study)[0].SeriesDescription;
     }
     if (PatientMark.filter(M => GetViewport().Sop.SOPInstanceUID == M.sop && M.type == "KO").length == 0) {
       GetViewport().nextFrame();
     }
+    // 如果沒有KO，就不要採取動作
+    if (!GetViewport().KO_SeriesDescription && GetViewport().KO) GetViewport().KO = false;
   }
   getByid("LockKOImg").onclick = function () {
     var div = createElem('div', 'KoSelectDrawer', 'drawer');

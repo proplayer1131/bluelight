@@ -15,6 +15,7 @@
         {"path":"../scripts/plugin/anatomical_plane.js", "name": "anatomical_plane", "disableCatch": "true"},
         {"path": "../scripts/plugin/AutoOperation.js", "name": "AutoOperation", "disableCatch": "true"},
         {"path": "../scripts/external/dcmjs.js", "name": "dcmjs", "disableCatch": "false"},
+        {"path": "../scripts/external/dcmjs_for_ko.js", "name": "dcmjs_for_ko", "disableCatch": "false"},
         {"path": "../scripts/plugin/Markup/gspsDicomSaver.js", "name": "gspsDicomSaver", "disableCatch": "true"},
         {"path": "../scripts/plugin/Markup/rtssDicomSaver.js", "name": "rtssDicomSaver", "disableCatch": "true"},
         {"path": "../scripts/plugin/Markup/segDicomSaver.js", "name": "segDicomSaver", "disableCatch": "true"}, 
