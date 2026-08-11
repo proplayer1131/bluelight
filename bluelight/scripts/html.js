@@ -545,7 +545,7 @@ function html_onload() {
     };
   }
 
-  for (var element of getClass("img")) {
+  for (var element of [...getClass("img"), ...getClass("innerimg")]) {
     if (element && element.alt) {
       element.onmouseover = onElementOver;
       element.onmouseleave = onElementLeave;
@@ -725,7 +725,7 @@ function img2darkByClass(classname, dark) {
 
 function onElementOver(OriginElem) {
   if (!OriginElem) OriginElem = this;
-  if (OriginElem.constructor.name == 'MouseEvent') OriginElem = OriginElem.toElement;
+  if (OriginElem.constructor.name == 'MouseEvent') OriginElem = OriginElem.target;
   // 建立 label 元素
   var label = document.createElement("label");
 
@@ -742,6 +742,7 @@ function onElementOver(OriginElem) {
   OriginElem.parentNode.appendChild(label);
   label.style.top = "" + (OriginElem.height + 15) + "px";
   label.style.left = "" + (OriginElem.getBoundingClientRect().x + (OriginElem.offsetWidth / 2) - (label.offsetWidth / 2)) + "px";
+  if (OriginElem.classList.contains("innerimg")) label.style.top = label.style.left = "";
 }
 
 function onElementLeave() {

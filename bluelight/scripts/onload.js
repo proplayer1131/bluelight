@@ -584,13 +584,15 @@ function AddAdvanceFunction() {
     }
     Export2dcm();
   }
+  getByid("downloadDcm").onmouseover = onElementOver;
+  getByid("downloadDcm").onmouseleave = onElementLeave;
 
   getByid("downloadImg").onclick = function () {
     var Export2png = function () {
       var link = document.createElement('a');
       link.download = 'dicom.png';
 
-      var newCanvas = createCanvas(GetViewport().canvas.width,  GetViewport().canvas.height);
+      var newCanvas = createCanvas(GetViewport().canvas.width, GetViewport().canvas.height);
       var context = newCanvas.getContext('2d');
       context.translate(newCanvas.width / 2, newCanvas.height / 2);
       context.rotate((GetViewport().rotate * Math.PI) / 180);
@@ -601,4 +603,6 @@ function AddAdvanceFunction() {
     }
     Export2png();
   }
+  getByid("downloadImg").onmouseover = onElementOver;
+  getByid("downloadImg").onmouseleave = onElementLeave;
 }
