@@ -1,15 +1,8 @@
 getByid("writeRTSS").addEventListener('click', () => {
     getByid("saveRTSS").onclick = function () {
         let buffer = getRtssDicomInstance();
-
-        let a = document.createElement("a");
-        let file = new Blob([buffer], {
-            type: "application/dicom"
-        });
-
-        a.href = window.URL.createObjectURL(file);
-        a.download = "RTSS.dcm";
-        a.click();
+        let file = new Blob([buffer], { type: "application/dicom" });
+        createAandDownloadWithBlob(file, "RTSS.dcm");
     };
 });
 

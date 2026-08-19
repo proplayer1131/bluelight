@@ -1920,10 +1920,7 @@ function VRscreenshot() {
     GetViewport().div.style.backgroundColor = "black";
     html2canvas(GetViewport().div).then(function (canvas) {
         //document.body.appendChild(canvas);
-        var a = document.createElement('a');
-        a.href = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-        a.download = 'image.png';
-        a.click();
+        createAandDownload(canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"), 'image.png');
         delete canvas;
     });
     GetViewport().div.style.backgroundColor = backgroundColor;
@@ -1932,7 +1929,7 @@ function VRscreenshot() {
 function get3dCurrPoint(e) {
     var currX = parseFloat(e.pageX);
     var currY = parseFloat(e.pageY);
- 
+
     return [currX, currY];
 }
 

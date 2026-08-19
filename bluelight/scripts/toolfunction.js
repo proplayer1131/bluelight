@@ -116,6 +116,24 @@ function createCanvas(w, h) {
     return canvas;
 }
 
+function createAandDownload(href, download) {
+    var a = createElem("a");
+    Object.assign(a, { href: href, download: download }).click();
+    setTimeout(() => URL.revokeObjectURL(href), 1000);
+}
+
+function createAandDownloadWithBlob(blob, download) {
+    var a = createElem("a");
+    var href = URL.createObjectURL(blob);
+    Object.assign(a, { href: href, download: download }).click();
+    setTimeout(() => URL.revokeObjectURL(href), 1000);
+}
+
+function clearClass(className) {
+    var elems = getClass(className);
+    for (var i = 0; i < elems.length; i++) elems[i].remove();
+}
+
 function log(value) {
     console.log(value);
 }
@@ -368,19 +386,19 @@ function SetGraphicColor(str) {
 
 //偵測是否包含無法顯示的亂碼
 function looksLikeMojibake(str) {
-  // 偵測是否有大量 Latin-1 區段的奇怪字元
-  const mojibakeChars = str.match(/[À-ÿ]/g); 
-  if (!mojibakeChars) return false;
-  // 若比例過高，幾乎可以確定是亂碼
-  return mojibakeChars.length / str.length > 0.1; //有些範例是0.3，我改0.1
+    // 偵測是否有大量 Latin-1 區段的奇怪字元
+    const mojibakeChars = str.match(/[À-ÿ]/g);
+    if (!mojibakeChars) return false;
+    // 若比例過高，幾乎可以確定是亂碼
+    return mojibakeChars.length / str.length > 0.1; //有些範例是0.3，我改0.1
 }
 
 //移除亂碼
 function fixMojibake(str) {
-  // Step 1: 把亂碼字元 (JS 字串) 轉回 byte (Latin-1)
-  const bytes = new Uint8Array(str.split('').map(ch => ch.charCodeAt(0)));
-  // Step 2: 再用 UTF-8 正確解碼
-  return new TextDecoder('utf-8').decode(bytes);
+    // Step 1: 把亂碼字元 (JS 字串) 轉回 byte (Latin-1)
+    const bytes = new Uint8Array(str.split('').map(ch => ch.charCodeAt(0)));
+    // Step 2: 再用 UTF-8 正確解碼
+    return new TextDecoder('utf-8').decode(bytes);
 }
 
 function equal_TOL(a, b, tolerance) {

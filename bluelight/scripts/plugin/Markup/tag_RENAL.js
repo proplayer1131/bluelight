@@ -174,7 +174,7 @@ getByid("exitTAG_RENAL").onclick = function () {
     getByid("TagStyleDiv_RENAL").style.display = "none";
     SetTable();
     displayMark();
-    
+
     getByid("MouseOperation").click();
 }
 
@@ -186,13 +186,8 @@ getByid("saveTAG_RENAL").onclick = function () {
     }
 
     function download_RENAL(text, name, type) {
-        let a = document.createElement("a");
-        let file = new Blob([text], {
-            type: type,
-        });
-        a.href = window.URL.createObjectURL(file);
-        a.download = name;
-        a.click();
+        let file = new Blob([text], { type: type });
+        createAandDownloadWithBlob(file, name);
     }
 
     function download2_RENAL(text, name, type) {
@@ -390,11 +385,8 @@ function handleRENALTag_RENAL() {
 
     // 下載 XML 文件
     function download_RENAL(text, name, type) {
-        let a = document.createElement("a");
         let file = new Blob([text], { type: type });
-        a.href = window.URL.createObjectURL(file);
-        a.download = name;
-        a.click();
+        createAandDownloadWithBlob(file, name);
     }
 
     download_RENAL(xmlContent, sopUID + "_RENAL.xml", "text/xml");

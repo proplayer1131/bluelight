@@ -562,14 +562,7 @@ function AddAdvanceFunction() {
     async function downloadFile(url, filename) {
       const response = await fetch(url);
       const blob = await response.blob(); // 取得 Blob 物件
-
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob); // 產生可下載的物件 URL
-      a.download = filename; // 強制指定下載的檔案名稱與副檔名
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(a.href); // 釋放 URL
+      createAandDownloadWithBlob(blob, filename);
     }
 
     var Export2dcm = function () {

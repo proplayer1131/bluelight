@@ -2,15 +2,8 @@ getByid("writeSEG").addEventListener("click", function () {
     getByid("saveSEG").onclick = function () {
         let buffer = getSegDicomInstance();
         if (!buffer) return;
-
-        let a = document.createElement("a");
-        let file = new Blob([buffer], {
-            type: "application/dicom"
-        });
-
-        a.href = window.URL.createObjectURL(file);
-        a.download = "SEG.dcm";
-        a.click();
+        let file = new Blob([buffer], { type: "application/dicom" });
+        createAandDownloadWithBlob(file, "SEG.dcm");
     };
 });
 

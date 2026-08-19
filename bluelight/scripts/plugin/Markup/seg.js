@@ -455,14 +455,8 @@ getByid("writeSEG").onclick = function () {
 
     getByid("saveSEG").onclick = function () {
         function download(text, name, type) {
-            let a = document.createElement('a');
-            let file = new Blob([text], {
-                type: type
-            });
-            a.href = window.URL.createObjectURL(file);
-            //a.style.display = '';
-            a.download = name;
-            a.click();
+            let file = new Blob([text], { type: type });
+            createAandDownloadWithBlob(file, name);
         }
         function download2(text, name, type) {
             let a = document.createElement('a');

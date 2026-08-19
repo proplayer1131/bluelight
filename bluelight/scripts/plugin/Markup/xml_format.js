@@ -93,13 +93,8 @@ getByid("writeXML").onclick = function () {
 
   getByid("saveXML").onclick = function () {
     function download(text, name, type) {
-      let a = document.createElement('a');
-      let file = new Blob([text], {
-        type: type
-      });
-      a.href = window.URL.createObjectURL(file);
-      a.download = name;
-      a.click();
+      let file = new Blob([text], { type: type });
+      createAandDownloadWithBlob(file, name);
     }
     setXml_context();
     download(String(getXml_context()), 'filename.xml', 'text/plain');

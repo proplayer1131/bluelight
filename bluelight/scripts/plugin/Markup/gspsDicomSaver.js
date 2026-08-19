@@ -1,15 +1,8 @@
 getByid("writeGSPS").addEventListener('click', () => {
     getByid("saveGSPS").onclick = function () {
         let buffer = getGspsDicomInstance();
-
-        let a = document.createElement("a");
-        let file = new Blob([buffer], {
-            type: "application/dicom"
-        });
-    
-        a.href = window.URL.createObjectURL(file);
-        a.download = "GSPS.dcm";
-        a.click();
+        let file = new Blob([buffer], { type: "application/dicom" });
+        createAandDownloadWithBlob(file, "GSPS.dcm");
     };
 });
 
@@ -106,7 +99,7 @@ function getGspsDicomInstance() {
     };
 
     dataset.GraphicAnnotationSequence[0].GraphicObjectSequence = [];
-    for (let i = 0 ; i < PatientMark.length ; i++) {
+    for (let i = 0; i < PatientMark.length; i++) {
         let curMark = PatientMark[i];
         if (curMark.sop === GetViewport().sop) {
             if (curMark.type === "POLYLINE") {
@@ -145,7 +138,7 @@ function getPolylineGraphicObject(mark) {
 
     let tempMark = mark.pointArray;
     let markXy = [];
-    for (let i = 0; i < tempMark.length ; i++) {
+    for (let i = 0; i < tempMark.length; i++) {
         let tempX = 0;
         let tempY = 0;
 
@@ -184,7 +177,7 @@ function getCircleGraphicObject(mark) {
 
     let tempMark = mark.pointArray;
     let markXy = [];
-    for (let i = 0; i < tempMark.length ; i++) {
+    for (let i = 0; i < tempMark.length; i++) {
         let tempX = 0;
         let tempY = 0;
 
@@ -199,7 +192,7 @@ function getCircleGraphicObject(mark) {
         markXy.push(tempX, tempY);
 
         graphicObject.GraphicData = markXy;
-        graphicObject.LineStyleSequence.PatternOnColorCIELabValue =  ("" + SetGraphicColor(mark.color)).split("\\").map(v => parseInt(v));
+        graphicObject.LineStyleSequence.PatternOnColorCIELabValue = ("" + SetGraphicColor(mark.color)).split("\\").map(v => parseInt(v));
         graphicObject.GraphicType = "CIRCLE";
         graphicObject.NumberOfGraphicPoints = (tempMark.length + tempMark.length) / 2;
     }

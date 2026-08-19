@@ -153,11 +153,8 @@ getByid("writeGSPS").onclick = function () {
 
     getByid("saveGSPS").onclick = function () {
         function download(text, name, type) {
-            let a = document.createElement('a');
             let file = new Blob([text], { type: type });
-            a.href = window.URL.createObjectURL(file);
-            a.download = name;
-            a.click();
+            createAandDownloadWithBlob(file, name);
         }
         function download2(text, name, type) {
             let file = new File([text], name + ".xml", { type: type });
