@@ -623,6 +623,8 @@ function EcgLoader(Sop) {
         if (!getByid("EcgView")) {
             var EcgView = createElem("div", "EcgView");
             getByid("EcgPage").appendChild(EcgView);
+            var EcgCanvasWrapper = createElem("div", "EcgCanvasWrapper");
+            getByid("EcgView").appendChild(EcgCanvasWrapper);
             var EcgLabel = createElem("label", null, "EcgLabel", "This is a test version.");
             getByid("EcgPage").appendChild(EcgLabel);
         }
@@ -728,7 +730,7 @@ function EcgLoader(Sop) {
 
 
         if (!getByid("EcgCanvas"))
-            getByid("EcgView").appendChild(createElem("CANVAS","EcgCanvas"));
+            getByid("EcgCanvasWrapper").appendChild(createElem("CANVAS", "EcgCanvas"));
 
         var ECGSpeedSelect = getByid("ECGSpeedSelect"), ECGVoltageSelect = getByid("ECGVoltageSelect");
         for (var opt of ECGSpeedSelect.options)
@@ -739,20 +741,31 @@ function EcgLoader(Sop) {
         ECGSpeedSelect.onchange = function () { EcgLoader(GetViewport().Sop); }
         ECGVoltageSelect.onchange = function () { EcgLoader(GetViewport().Sop); }
 
-        //////////////////////////////////////////////////
-
-        // 紙張大小
-        const A4Width = 3508, A4Height = 2480;
-        // 準備畫布
-        var EcgCanvas = getByid("EcgCanvas"), ctx = EcgCanvas.getContext("2d");
-        EcgCanvas.width = A4Width + 180, EcgCanvas.height = A4Height + 100;
-        // 縮放
-        var scale = getByid("ECGOptionsDIV").clientHeight / (window.devicePixelRatio || 1);
-        getByid("EcgCanvas").style.height = (getByid("EcgView").offsetHeight - scale) + "px"
-        EcgCanvas.style.zoom = "1.0";
+        // 滿版視窗的縮放大小
+        const dpr = window.devicePixelRatio || 1;
+        var scale = getByid("ECGOptionsDIV").clientHeight / dpr;
+        var originHeight = ((getByid("EcgView").offsetHeight - scale) | 0) - 20;
+        const A4_originHeight = originHeight * dpr; //originHeight / 2480;
+        const originZoom = (originHeight / 2480);
+        const A4_originWidth = 3508 * originZoom * dpr | 0;
 
         //////////////////////////////////////////////////
         function refleshWaveforms() {
+            const zoom = parseFloat(getByid("ECGZoomSlider").value) / 100;
+            // 紙張大小
+            const A4Width = A4_originWidth * zoom | 0, A4Height = A4_originHeight * zoom | 0;
+            // A4Width = 3508, A4Height = 2480;
+
+            // 準備畫布
+            var EcgCanvas = getByid("EcgCanvas"), ctx = EcgCanvas.getContext("2d");
+            EcgCanvas.width = A4Width + 180 * originZoom * zoom | 0, EcgCanvas.height = A4Height + 100 * originZoom * zoom | 0;
+            // 縮放
+            EcgCanvas.style.zoom = "";
+            EcgCanvas.style.transformOrigin = '0 0';
+            EcgCanvas.style.transform = `scale(${1 / dpr})`;
+            getByid("EcgCanvasWrapper").style.width = EcgCanvas.width / dpr + "px";
+            getByid("EcgCanvasWrapper").style.height = EcgCanvas.height / dpr + "px";
+
             // 背景白色
             ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, EcgCanvas.width, EcgCanvas.height);
             // 重設變形矩陣
@@ -791,32 +804,38 @@ function EcgLoader(Sop) {
 
             //////////////////////////////////////////////////
             // 線條寬度
-            var lineWidth = 1 / parseFloat(getByid("EcgCanvas").style.zoom);
+            var lineWidth = 1;// (window.devicePixelRatio || 1); // 1 / parseFloat(getByid("EcgCanvas").style.zoom);
             //lineWidth = lineWidth > 2 ? 2 : lineWidth < 0.5 ? 0.5 : lineWidth;
             //位移
-            ctx.translate(50, 50);
+            ctx.translate((50 * originZoom * zoom | 0) + 0.5, (50 * originZoom * zoom | 0) + 0.5);
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.imageSmoothingEnabled = false;
+            ctx.msImageSmoothingEnabled = false;
+            ctx.webkitImageSmoothingEnabled = false;
+            ctx.textRendering = 'geometricPrecision';
             // 畫底框框
             function creatEcgBackground() {
-                const w = A4Width, h = A4Height;
+                const w = A4Width | 0, h = A4Height | 0;
                 // 畫 1mm 小網格 (淺色)
                 ctx.beginPath();
-                ctx.strokeStyle = 'rgba(255, 180, 180, 0.5)', ctx.lineWidth = 1.5 * lineWidth;
-                for (let x = 0; x <= w; x += px_per_mm) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
-                for (let y = 0; y <= h; y += px_per_mm) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
+                ctx.strokeStyle = 'rgb(255, 220, 220)', ctx.lineWidth = 1 * lineWidth;
+                for (let x = 0; x <= w; x += px_per_mm) { ctx.moveTo(x | 0, 0); ctx.lineTo(x | 0, h); }
+                for (let y = 0; y <= h; y += px_per_mm) { ctx.moveTo(0, y | 0); ctx.lineTo(w, y | 0); }
                 ctx.stroke();
 
                 // 畫 5mm 大網格 (深色)
                 ctx.beginPath();
-                ctx.strokeStyle = 'rgba(255, 100, 100, 0.8)', ctx.lineWidth = 2 * lineWidth;
-                for (let x = 0; x <= w; x += px_per_mm * 5) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
-                for (let y = 0; y <= h; y += px_per_mm * 5) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
+                ctx.strokeStyle = 'rgb(255, 120, 120)', ctx.lineWidth = 1 * lineWidth;
+                for (let x = 0; x <= w; x += px_per_mm * 5) { ctx.moveTo(x | 0, 0); ctx.lineTo(x | 0, h); }
+                for (let y = 0; y <= h; y += px_per_mm * 5) { ctx.moveTo(0, y | 0); ctx.lineTo(w, y | 0); }
                 ctx.stroke();
 
                 // 畫區分12格的最大網格 (粗線)
                 ctx.beginPath();
-                ctx.strokeStyle = 'rgba(255, 80, 80, 0.9)', ctx.lineWidth = 8 * lineWidth;
-                for (let x = 0; x <= w; x += Col_width) { ctx.moveTo(x, 0); ctx.lineTo(x, h - ((x == 0 || x >= w) ? 0 : Row_height)); }
-                for (let y = 0; y <= h; y += Row_height) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
+                ctx.strokeStyle = 'rgb(255, 80, 80)', ctx.lineWidth = 2 * lineWidth;
+                for (let x = 0; x <= w; x += Col_width) { ctx.moveTo(x | 0, 0); ctx.lineTo(x | 0, h - ((x == 0 || x >= w) ? 0 : Row_height)); }
+                for (let y = 0; y <= h; y += Row_height) { ctx.moveTo(0, y | 0); ctx.lineTo(w, y | 0); }
                 ctx.stroke();
             }
             creatEcgBackground();
@@ -881,20 +900,20 @@ function EcgLoader(Sop) {
                     // 設定剪裁區域，避免畫到其他的格子
                     ctx.beginPath(); ctx.rect(startX, startY, width, height); ctx.clip();
                     // 繪製導程名稱
-                    ctx.fillStyle = 'black'; ctx.font = `bold ${42 * lineWidth}px sans-serif`;
-                    ctx.fillText(block.name, startX + 10 * lineWidth, startY + 45 * lineWidth);
+                    ctx.fillStyle = 'black'; ctx.font = `bold ${18 | 0}px sans-serif`;
+                    ctx.fillText(block.name, startX + 5 | 0, startY + 17 | 0);
 
                     // 繪製波型
                     ctx.beginPath();
-                    ctx.strokeStyle = 'black'; ctx.lineJoin = 'round'; ctx.lineWidth = 5 * lineWidth;
+                    ctx.strokeStyle = 'black'; ctx.lineJoin = 'round'; ctx.lineWidth = 1.5 * lineWidth;
                     for (let i = 0; i < numSamples; i++) {
                         const index = sampleOffset + i;
                         if (index >= signal.length) break;
 
                         const x = (i / sr) * speed * Px_per_mm;
                         const y = (signal[index] * voltage * Px_per_mm);
-                        if (i === 0) ctx.moveTo(startX + x, baselineY - y);
-                        else ctx.lineTo(startX + x, baselineY - y);
+                        if (i === 0) ctx.moveTo(startX + x | 0, baselineY - y | 0);
+                        else ctx.lineTo(startX + x | 0, baselineY - y | 0);
                     }
                     ctx.stroke();
                     ctx.restore();
@@ -902,17 +921,17 @@ function EcgLoader(Sop) {
                     // 繪製校正方波
                     if (block.isRhythm) {
                         ctx.save();
-                        ctx.translate(130, 0);
+                        ctx.translate((130 * originZoom * zoom) | 0, 0);
                         ctx.beginPath();
-                        ctx.strokeStyle = 'black'; ctx.lineJoin = 'round'; ctx.lineWidth = 5 * lineWidth;
+                        ctx.strokeStyle = 'black'; ctx.lineJoin = 'round'; ctx.lineWidth = 1.5 * lineWidth;
                         for (let i = numSamples - ((speed * 8) | 0); i < numSamples; i++) {
                             const index = sampleOffset + i;
                             if (index >= signal.length) break;
 
                             const x = (i / sr) * speed * px_per_mm_Rhythm;
                             const y = (signal[index] * voltage * px_per_mm_Rhythm);
-                            if (i === 0) ctx.moveTo(startX + x, baselineY - y);
-                            else ctx.lineTo(startX + x, baselineY - y);
+                            if (i === 0) ctx.moveTo(startX + x | 0, baselineY - y | 0);
+                            else ctx.lineTo(startX + x | 0, baselineY - y | 0);
                         }
                         ctx.stroke();
                         ctx.restore();
@@ -928,17 +947,19 @@ function EcgLoader(Sop) {
         getByid("EcgView").oncontextmenu = function (e) { e.preventDefault(); };
         getByid("EcgView").onmousemove = function (e) {
             if (!this.MouseDownCheck || !getByid("EcgCanvas")) return;
-            var zoom = parseFloat(getByid("EcgCanvas").style.zoom) ? parseFloat(getByid("EcgCanvas").style.zoom) : 1.0;
-            if (e.pageY - this.point.y < -5) getByid("EcgCanvas").style.zoom = zoom + 0.05 >= 2.0 ? 2.0 : zoom + 0.05;
-            if (e.pageY - this.point.y > 5) getByid("EcgCanvas").style.zoom = zoom - 0.05 <= 0.5 ? 0.5 : zoom - 0.05;
+            var zoom = getByid("ECGZoomSlider").value ? getByid("ECGZoomSlider").value / 100.0 : 1.0;
+            if (e.pageY - this.point.y < -5) zoom = zoom + 0.05 >= 2.0 ? 2.0 : zoom + 0.05;
+            if (e.pageY - this.point.y > 5) zoom = zoom - 0.05 <= 0.5 ? 0.5 : zoom - 0.05;
             this.point = new Point2D(e.pageX, e.pageY);
-            getByid("ECGZoomSlider").value = (parseFloat(getByid("EcgCanvas").style.zoom) * 100) | 0;
-        }
-        getByid("ECGZoomSlider").onchange = function () {
-            getByid("EcgCanvas").style.zoom = (parseFloat(this.value) / 100);
+            getByid("ECGZoomSlider").value = zoom * 100 | 0; //(parseFloat(getByid("EcgCanvas").style.zoom) * 100) | 0;
             requestAnimationFrame(() => refleshWaveforms());
         }
-        getByid("ECGZoomSlider").value = (parseFloat(getByid("EcgCanvas").style.zoom) * 100) | 0;
+        getByid("ECGZoomSlider").onchange = function () {
+            //getByid("EcgCanvas").style.zoom = (parseFloat(this.value) / 100);
+            requestAnimationFrame(() => refleshWaveforms());
+        }
+        // getByid("EcgCanvas").style.zoom = 0.5;
+        // getByid("ECGZoomSlider").value = (parseFloat(getByid("EcgCanvas").style.zoom) * 100) | 0;
     } catch (ex) {
         ErrorMessage.pushErrorMessage(512);
     }

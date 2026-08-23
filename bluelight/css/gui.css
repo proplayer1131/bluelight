@@ -436,10 +436,16 @@ button:hover {
   object-position: center;
 }
 
+#EcgCanvasWrapper{
+  overflow: hidden;
+  position: relative;
+}
+
 #ECGOptionsDIV {
   background-color: #00306044;
   color: #ffffff;
   height: 25px;
+  user-select: none;
 }
 
 #ECGAnnotationImg{
