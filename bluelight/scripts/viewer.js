@@ -758,7 +758,7 @@ function EcgLoader(Sop) {
 
             // 準備畫布
             var EcgCanvas = getByid("EcgCanvas"), ctx = EcgCanvas.getContext("2d");
-            EcgCanvas.width = A4Width + 180 * originZoom * zoom | 0, EcgCanvas.height = A4Height + 100 * originZoom * zoom | 0;
+            EcgCanvas.width = A4Width + 180 * originZoom * zoom * dpr | 0, EcgCanvas.height = A4Height + 100 * originZoom * zoom * dpr | 0;
             // 縮放
             EcgCanvas.style.zoom = "";
             EcgCanvas.style.transformOrigin = '0 0';
@@ -921,7 +921,7 @@ function EcgLoader(Sop) {
                     // 繪製校正方波
                     if (block.isRhythm) {
                         ctx.save();
-                        ctx.translate((130 * originZoom * zoom) | 0, 0);
+                        ctx.translate((130 * originZoom * zoom * dpr) | 0, 0);
                         ctx.beginPath();
                         ctx.strokeStyle = 'black'; ctx.lineJoin = 'round'; ctx.lineWidth = 1.5 * lineWidth;
                         for (let i = numSamples - ((speed * 8) | 0); i < numSamples; i++) {
