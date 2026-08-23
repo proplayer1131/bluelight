@@ -687,6 +687,13 @@ function EcgLoader(Sop) {
                             tagValue = positions.join(", "); // 把座標點用逗號組合起來
                         }
                         if (nameMeaning) result.push({ tag: nameMeaning, value: "" + tagValue });
+                    } else {
+                        if (itemData.elements[Tag.UnformattedTextValue]) {
+                            tagValue = result.push({ tag: "Text", value: "" + itemData.string(Tag.UnformattedTextValue) });
+                        }
+                        if (itemData.elements[Tag.TextValue]) {
+                            tagValue = result.push({ tag: "Text", value: "" + itemData.string(Tag.TextValue) });
+                        }
                     }
                 });
 
