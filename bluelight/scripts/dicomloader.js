@@ -233,6 +233,9 @@ function getPixelDataFromDataSet(imageObj, dataSet, frameIndex = 0) {
     function dealAssumingRGB(imageObj, dataSet, pixelData) {
         if (!imageObj.AssumingRGB) return pixelData;
         var width = imageObj.width, height = imageObj.height;
+        // JPEG SOF 元件 ID 為 0/1/2 時會被標成 AssumingRGB
+        // 若解碼後長度已等於 W×H×3，表示影像本身正常，不應再做行交錯修正
+        if (pixelData && pixelData.length === width * height * 3) return pixelData;
         function discardOddLines(pixelData, width, height) {
             const rowSize = width * 3;
             const output = new Uint8ClampedArray(Math.ceil(height / 2) * rowSize);

@@ -557,9 +557,16 @@
 
       var value, actab, dctab, qtab, ctrC, i, k, j;
 
-      prev[0] = this.selector(0);
-      prev[1] = this.selector(1);
-      prev[2] = this.selector(2);
+      // Restart interval 後必須重設預測值為 2^(P-1)，與 decodeSingle 一致
+      // 某些 RGB JPEG Lossless 常每列設 restart，漏掉會從第 2 列起破圖
+      if (this.restarting) {
+          this.restarting = false;
+         prev[0] = prev[1] = prev[2] = (1 << (this.frame.precision - 1));
+      } else {
+          prev[0] = this.selector(0);
+          prev[1] = this.selector(1);
+          prev[2] = this.selector(2);
+      }
 
       for (ctrC = 0; ctrC < this.numComp; ctrC+=1) {
           qtab = this.qTab[ctrC];
