@@ -102,6 +102,62 @@ function getROINameList(dataSet) {
 function readDicomMark(dataSet) {
   readDicomOverlay(dataSet);
 
+  if (dataSet.string(Tag.ShutterShape)) {
+    var sop1;
+    if (dataSet.string(Tag.ReferencedSeriesSequence)) {
+      for (var ii2 in dataSet.elements.x00081115.items) {
+        var x00081115DataSet = dataSet.elements.x00081115.items[ii2].dataSet.elements.x00081140.items;
+        for (var s = 0; s < x00081115DataSet.length; s++) {
+          sop1 = x00081115DataSet[s].dataSet.string(Tag.ReferencedSOPInstanceUID);
+        }
+      }
+    }
+
+    if (sop1) {
+      if (dataSet.string(Tag.ShutterShape) == "RECTANGULAR") {
+        var ShutterLeftVerticalEdge = dataSet.intString(Tag.ShutterLeftVerticalEdge);
+        var ShutterRightVerticalEdge = dataSet.intString(Tag.ShutterRightVerticalEdge);
+        var ShutterUpperHorizontalEdge = dataSet.intString(Tag.ShutterUpperHorizontalEdge);
+        var ShutterLowerHorizontalEdge = dataSet.intString(Tag.ShutterLowerHorizontalEdge);
+        var GspsMark = new BlueLightMark();
+        GspsMark.sop = sop1;
+        GspsMark.ShutterLeftVerticalEdge = ShutterLeftVerticalEdge;
+        GspsMark.ShutterRightVerticalEdge = ShutterRightVerticalEdge;
+        GspsMark.ShutterUpperHorizontalEdge = ShutterUpperHorizontalEdge;
+        GspsMark.ShutterLowerHorizontalEdge = ShutterLowerHorizontalEdge;
+        GspsMark.hideName = GspsMark.showName = "RECTANGULAR";
+        GspsMark.type = "Shutter";
+        PatientMark.push(GspsMark);
+        refreshMark(GspsMark, false);
+      }
+      if (dataSet.string(Tag.ShutterShape) == "CIRCULAR") {
+        var GspsMark = new BlueLightMark();
+        GspsMark.sop = sop1;
+
+        GspsMark.centerRow = parseInt(dataSet.string(Tag.CenterOfCircularShutter).split("\\")[0]);
+        GspsMark.centerColumn = parseInt(dataSet.string(Tag.CenterOfCircularShutter).split("\\")[1]);
+        GspsMark.radius = dataSet.intString(Tag.RadiusOfCircularShutter);
+        GspsMark.hideName = GspsMark.showName = "CIRCULAR";
+        GspsMark.type = "Shutter";
+        PatientMark.push(GspsMark);
+        refreshMark(GspsMark, false);
+      }
+      if (dataSet.string(Tag.ShutterShape) == "POLYGONAL") {
+        var GspsMark = new BlueLightMark();
+        GspsMark.sop = sop1;
+        GspsMark.pointArray = dataSet.string(Tag.VerticesOfThePolygonalShutter).split("\\");
+        for (var i in GspsMark.pointArray) GspsMark.pointArray[i] = parseInt(GspsMark.pointArray[i]);
+        GspsMark.hideName = GspsMark.showName = "POLYGONAL";
+        GspsMark.type = "Shutter";
+        PatientMark.push(GspsMark);
+        refreshMark(GspsMark, false);
+      }
+      if (dataSet.string(Tag.ShutterShape) == "BITMAP") {}
+      refreshMarkFromSop(sop1);
+      displayMark(GetViewport().index);
+    }
+  }
+
   if (dataSet.string(Tag.GraphicAnnotationSequence)) {
     var sop1;
     if (dataSet.string(Tag.ReferencedSeriesSequence)) {

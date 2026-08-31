@@ -361,6 +361,52 @@ function drawCIRCLE(canvas, Mark, viewport) {
     }
 }
 
+function drawShutter(canvas, Mark, viewport) {
+    var ctx = canvas.getContext("2d");
+
+    if (Mark.hideName == "RECTANGULAR") {
+        var x = Math.min(Mark.ShutterLeftVerticalEdge, Mark.ShutterRightVerticalEdge);
+        var y = Math.min(Mark.ShutterUpperHorizontalEdge, Mark.ShutterLowerHorizontalEdge);
+        var r = Math.max(Mark.ShutterLeftVerticalEdge, Mark.ShutterRightVerticalEdge);
+        var b = Math.max(Mark.ShutterUpperHorizontalEdge, Mark.ShutterLowerHorizontalEdge);
+        var tempAlpha = ctx.globalAlpha;
+        ctx.globalAlpha = 1.0;
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvas.width, y);                 // 上
+        ctx.fillRect(0, b, canvas.width, canvas.height - b); // 下
+        ctx.fillRect(0, y, x, b - y);                        // 左
+        ctx.fillRect(r, y, canvas.width - r, b - y);         // 右
+        ctx.globalAlpha = tempAlpha;
+    }
+
+    if (Mark.hideName == "CIRCULAR") {
+        var tempAlpha = ctx.globalAlpha;
+        ctx.globalAlpha = 1.0;
+        ctx.fillStyle = "black";
+        ctx.beginPath();
+        ctx.rect(0, 0, canvas.width, canvas.height);
+        ctx.arc(Mark.centerColumn, Mark.centerRow, Mark.radius, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fill("evenodd"); // 僅填滿外部
+        ctx.globalAlpha = tempAlpha;
+    }
+
+    if (Mark.hideName == "POLYGONAL" && Mark.pointArray.length >= 2) {
+        var tempAlpha = ctx.globalAlpha;
+        ctx.globalAlpha = 1.0;
+        ctx.fillStyle = "black";
+        ctx.beginPath();
+        ctx.rect(0, 0, canvas.width, canvas.height);
+        ctx.moveTo(Mark.pointArray[1], Mark.pointArray[0]);
+        for (var i = 2; i < Mark.pointArray.length; i += 2) {
+            ctx.lineTo(Mark.pointArray[i + 1], Mark.pointArray[i + 0]);
+        }
+        ctx.closePath();
+        ctx.fill("evenodd"); // 僅填滿外部
+        ctx.globalAlpha = tempAlpha;
+    }
+}
+
 function drawPS(canvas, Mark, viewport) {
     if (Mark.ImageHorizontalFlip == "Y" || Mark.ImageHorizontalFlip == "N") {
         viewport.VerticalFlip = Mark.ImageHorizontalFlip == "Y" ? true : false;
@@ -701,6 +747,7 @@ function displayMark(viewportNum = viewportNumber, firstLoad = false) {
         else if (Mark.type == "ELLIPSE") drawELLIPSE(MarkCanvas, Mark, viewport);
         else if (Mark.type == "CIRCLE") drawCIRCLE(MarkCanvas, Mark, viewport);
         else if (Mark.type == "PS" && firstLoad) drawPS(MarkCanvas, Mark, viewport);
+        else if (Mark.type == "Shutter") drawShutter(MarkCanvas, Mark, viewport);
     }
 
     for (var Mark of patientMark_enable) {
